@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from starlette.concurrency import run_in_threadpool
 
 from middleware import register_exception_handlers
-from model_api import ensure_model_ready, router as model_router
+from model_controller import ensure_model_ready, router as model_router
 from schemas import HealthResponse
 
 

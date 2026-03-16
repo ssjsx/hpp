@@ -22,65 +22,65 @@ class TrainingRow(HouseFeatures):
 
 
 class ModelMetrics(BaseModel):
-    r2: float
-    mae: float
-    rmse: float
+    r2: float = Field(...)
+    mae: float = Field(...)
+    rmse: float = Field(...)
 
 
 class ModelCoefficients(BaseModel):
-    square_footage: float
-    bedrooms: float
-    bathrooms: float
-    year_built: float
-    lot_size: float
-    distance_to_city_center: float
-    school_rating: float
+    square_footage: float = Field(...)
+    bedrooms: float = Field(...)
+    bathrooms: float = Field(...)
+    year_built: float = Field(...)
+    lot_size: float = Field(...)
+    distance_to_city_center: float = Field(...)
+    school_rating: float = Field(...)
 
 
 class ResponseBase(BaseModel):
-    success: Literal[0, 1]
+    success: Literal[0, 1] = Field(...)
 
 
 class SuccessResponseBase(ResponseBase):
-    success: Literal[0] = 0
+    success: Literal[0] = Field(0)
 
 
 class PredictSingleResponse(SuccessResponseBase):
-    prediction: float
+    prediction: float = Field(...)
 
 
 class PredictBatchResponse(SuccessResponseBase):
-    predictions: list[float]
-    count: int
+    predictions: list[float] = Field(...)
+    count: int = Field(...)
 
 
 class ModelInfoResponse(SuccessResponseBase):
-    model: str
-    features: list[str]
-    intercept: float
-    coefficients: ModelCoefficients
-    metrics: ModelMetrics
-    model_weights_file: str
+    model: str = Field(...)
+    features: list[str] = Field(...)
+    intercept: float = Field(...)
+    coefficients: ModelCoefficients = Field(...)
+    metrics: ModelMetrics = Field(...)
+    model_weights_file: str = Field(...)
 
 
 class HealthResponse(SuccessResponseBase):
-    status: str
+    status: str = Field(...)
 
 
 class ValidationErrorDetail(BaseModel):
-    type: str
-    loc: list[str | int]
-    msg: str
-    input: Any | None = None
+    type: str = Field(...)
+    loc: list[str | int] = Field(...)
+    msg: str = Field(...)
+    input: Any | None = Field(default=None)
 
 
 class ErrorPayload(BaseModel):
-    code: str
-    message: str
-    path: str
-    details: list[ValidationErrorDetail] | None = None
+    code: str = Field(...)
+    message: str = Field(...)
+    path: str = Field(...)
+    details: list[ValidationErrorDetail] | None = Field(default=None)
 
 
 class ErrorResponse(ResponseBase):
-    success: Literal[1] = 1
-    error: ErrorPayload
+    success: Literal[1] = Field(1)
+    error: ErrorPayload = Field(...)
