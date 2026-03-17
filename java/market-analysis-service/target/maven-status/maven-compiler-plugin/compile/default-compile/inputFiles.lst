@@ -1,0 +1,14 @@
+/Users/fushuoxia/Development/interview/java/market-analysis-service/src/main/java/com/interview/market/MarketAnalysisApplication.java
+/Users/fushuoxia/Development/interview/java/market-analysis-service/src/main/java/com/interview/market/config/CacheConfig.java
+/Users/fushuoxia/Development/interview/java/market-analysis-service/src/main/java/com/interview/market/config/OpenApiConfig.java
+/Users/fushuoxia/Development/interview/java/market-analysis-service/src/main/java/com/interview/market/controller/MarketAnalysisController.java
+/Users/fushuoxia/Development/interview/java/market-analysis-service/src/main/java/com/interview/market/model/MarketFilters.java
+/Users/fushuoxia/Development/interview/java/market-analysis-service/src/main/java/com/interview/market/model/MarketOverviewResponse.java
+/Users/fushuoxia/Development/interview/java/market-analysis-service/src/main/java/com/interview/market/model/MarketSegmentPoint.java
+/Users/fushuoxia/Development/interview/java/market-analysis-service/src/main/java/com/interview/market/model/MarketSummary.java
+/Users/fushuoxia/Development/interview/java/market-analysis-service/src/main/java/com/interview/market/model/PredictRequest.java
+/Users/fushuoxia/Development/interview/java/market-analysis-service/src/main/java/com/interview/market/model/PropertyRecord.java
+/Users/fushuoxia/Development/interview/java/market-analysis-service/src/main/java/com/interview/market/model/WhatIfRequest.java
+/Users/fushuoxia/Development/interview/java/market-analysis-service/src/main/java/com/interview/market/model/WhatIfResponse.java
+/Users/fushuoxia/Development/interview/java/market-analysis-service/src/main/java/com/interview/market/service/MarketAnalysisService.java
+/Users/fushuoxia/Development/interview/java/market-analysis-service/src/main/java/com/interview/market/service/PredictClient.java

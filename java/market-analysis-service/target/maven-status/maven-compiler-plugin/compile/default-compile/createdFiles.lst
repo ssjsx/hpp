@@ -1,0 +1,15 @@
+com/interview/market/model/WhatIfRequest.class
+com/interview/market/model/MarketOverviewResponse.class
+com/interview/market/service/PredictClient.class
+com/interview/market/controller/MarketAnalysisController.class
+com/interview/market/model/PredictRequest.class
+com/interview/market/model/MarketSegmentPoint.class
+com/interview/market/model/PropertyRecord.class
+com/interview/market/service/MarketAnalysisService.class
+com/interview/market/service/PredictClient$PredictResponse.class
+com/interview/market/MarketAnalysisApplication.class
+com/interview/market/model/MarketFilters.class
+com/interview/market/config/CacheConfig.class
+com/interview/market/config/OpenApiConfig.class
+com/interview/market/model/WhatIfResponse.class
+com/interview/market/model/MarketSummary.class

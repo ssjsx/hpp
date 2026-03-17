@@ -1,0 +1,19 @@
+server:
+  port: 8080
+
+market:
+  datasetPath: ../../python/predict_server/dataset/House Price Dataset.csv
+  cache:
+    overviewTtl: PT5M
+    csvTtl: PT10M
+    overviewMaxSize: 200
+    csvMaxSize: 100
+
+predict:
+  baseUrl: http://127.0.0.1:8000
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
