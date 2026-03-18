@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const PYTHON_API_URL = process.env.PYTHON_API_URL;
+const PYTHON_API_URL = process.env.PYTHON_API_URL?.replace(/\/$/, "");
 
 export async function POST(req: NextRequest) {
   if (!PYTHON_API_URL) {
@@ -41,22 +41,28 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    const endpoint = `${PYTHON_API_URL}/app1/property-estimate`;
     const upstream = await fetch(`${PYTHON_API_URL}/app1/property-estimate`, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: form.toString(),
+      signal: AbortSignal.timeout(8000),
     });
 
     const data = await upstream.json();
     return NextResponse.json(data, { status: upstream.status });
-  } catch {
+  } catch (err) {
+    console.error("[app1/estimate] upstream call failed", {
+      endpoint: `${PYTHON_API_URL}/app1/property-estimate`,
+      error: err instanceof Error ? err.message : String(err),
+    });
     return NextResponse.json(
       {
         success: 1,
         error: {
           code: "UPSTREAM_UNAVAILABLE",
           message:
-            "Prediction service is unavailable. Please ensure it is running on port 8001.",
+            "Prediction service is unavailable. Check PYTHON_API_URL and python api_server connectivity.",
           path: "/api/app1/estimate",
         },
       },
