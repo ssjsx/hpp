@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+import json
 import logging
-from typing import Any
+from typing import Any, cast
 
 import pymysql
 
@@ -35,6 +36,21 @@ _ADD_INDEX_SQL = """
 
 _initialized = False
 _logger = logging.getLogger(__name__)
+
+
+def _parse_inputs_payload(raw_inputs: Any) -> dict[str, Any]:
+    if isinstance(raw_inputs, dict):
+        return raw_inputs
+
+    if isinstance(raw_inputs, (bytes, bytearray)):
+        raw_inputs = raw_inputs.decode("utf-8")
+
+    if isinstance(raw_inputs, str):
+        parsed = json.loads(raw_inputs)
+        if isinstance(parsed, dict):
+            return parsed
+
+    raise ValueError("history inputs payload is not a valid JSON object")
 
 
 def _connect() -> pymysql.connections.Connection:
@@ -95,7 +111,7 @@ def list_history(limit: int = 100) -> list[EstimateHistoryItem]:
                     """,
                     (safe_limit,),
                 )
-                rows: list[dict[str, Any]] = cursor.fetchall()
+                rows = cast(list[dict[str, Any]], cursor.fetchall())
     except Exception as exc:
         raise ApiError(
             status_code=503,
@@ -105,14 +121,22 @@ def list_history(limit: int = 100) -> list[EstimateHistoryItem]:
 
     result: list[EstimateHistoryItem] = []
     for row in rows:
-        result.append(
-            EstimateHistoryItem(
-                id=str(row["id"]),
-                timestamp=int(row["created_at"]),
-                prediction=float(row["prediction"]),
-                inputs=PropertyFeatures.model_validate(row["inputs"]),
+        try:
+            parsed_inputs = _parse_inputs_payload(row.get("inputs"))
+            result.append(
+                EstimateHistoryItem(
+                    id=str(row["id"]),
+                    timestamp=int(row["created_at"]),
+                    prediction=float(row["prediction"]),
+                    inputs=PropertyFeatures.model_validate(parsed_inputs),
+                )
             )
-        )
+        except Exception as exc:
+            _logger.warning(
+                "Skipping invalid history row id=%s due to malformed inputs: %s",
+                row.get("id"),
+                exc,
+            )
     return result
 
 
