@@ -41,7 +41,6 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const endpoint = `${PYTHON_API_URL}/app1/property-estimate`;
     const upstream = await fetch(`${PYTHON_API_URL}/app1/property-estimate`, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
