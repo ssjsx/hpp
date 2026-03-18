@@ -11,6 +11,7 @@ with _CONFIG_PATH.open() as _f:
     _raw = yaml.safe_load(_f)
 
 _predict = _raw["predict_server"]
+_mysql = _raw.get("mysql", {})
 
 # --- predict_server integration ---
 # Environment variables override values from config.yaml.
@@ -27,3 +28,10 @@ CORS_ALLOWED_ORIGINS: list[str] = (
     if _origins_env
     else list(_cors.get("allowed_origins", ["http://localhost:3000"]))
 )
+
+# --- MySQL for app1 history ---
+MYSQL_HOST: str = os.getenv("MYSQL_HOST", _mysql.get("host", "127.0.0.1"))
+MYSQL_PORT: int = int(os.getenv("MYSQL_PORT", _mysql.get("port", 3306)))
+MYSQL_USER: str = os.getenv("MYSQL_USER", _mysql.get("user", "root"))
+MYSQL_PASSWORD: str = os.getenv("MYSQL_PASSWORD", _mysql.get("password", ""))
+MYSQL_DATABASE: str = os.getenv("MYSQL_DATABASE", _mysql.get("database", "interview"))

@@ -2,7 +2,15 @@ predict_server:
   url: "http://127.0.0.1:8000"
   timeout_seconds: 10
 
+mysql:
+  host: "127.0.0.1"
+  port: 3306
+  user: "root"
+  password: "123456"
+  database: "interview"
+
 cors:
   allowed_origins:
     - "http://localhost:3000"
-    - "http://localhost:3001"
+    - "http://localhost:3002"
+    - "http://localhost:3010"

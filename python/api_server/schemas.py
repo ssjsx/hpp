@@ -86,6 +86,17 @@ class PropertyEstimateResponse(SuccessResponseBase):
     )
 
 
+class EstimateHistoryItem(BaseModel):
+    id: str = Field(..., title="History Item ID", examples=["4f6144f2-8c53-4a1f-a2c0-11a6731b7f3d"])
+    timestamp: int = Field(..., title="Unix Timestamp (ms)", examples=[1710662400000])
+    inputs: PropertyFeatures = Field(..., title="Property Inputs")
+    prediction: float = Field(..., title="Predicted Property Value", examples=[523450.12])
+
+
+class HistoryListResponse(SuccessResponseBase):
+    history: list[EstimateHistoryItem] = Field(default_factory=list)
+
+
 class PredictServerSingleResponse(SuccessResponseBase):
     prediction: float = Field(
         ...,
