@@ -2,7 +2,7 @@ server:
   port: 8080
 
 market:
-  datasetPath: ../../python/predict_server/dataset/House Price Dataset.csv
+  datasetPath: "classpath:House Price Dataset.csv"
   cache:
     overviewTtl: PT5M
     csvTtl: PT10M

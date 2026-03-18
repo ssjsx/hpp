@@ -11,8 +11,8 @@ import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -24,6 +24,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -32,14 +34,17 @@ public class MarketAnalysisService {
   private static final Logger log = LoggerFactory.getLogger(MarketAnalysisService.class);
 
   private final PredictClient predictClient;
-  private final Path datasetPath;
+  private final ResourceLoader resourceLoader;
+  private final String datasetLocation;
   private volatile List<PropertyRecord> records;
 
   public MarketAnalysisService(
       PredictClient predictClient,
+      ResourceLoader resourceLoader,
       @Value("${market.datasetPath}") String datasetPath) {
     this.predictClient = predictClient;
-    this.datasetPath = Path.of(datasetPath);
+    this.resourceLoader = resourceLoader;
+    this.datasetLocation = datasetPath;
   }
 
   @Cacheable(value = "marketOverview", key = "#filters.cacheKey()")
@@ -93,8 +98,7 @@ public class MarketAnalysisService {
     double prediction = predictClient.predict(com.interview.market.model.PredictRequest.fromWhatIf(request));
     double marketAveragePrice = getMarketAveragePrice();
 
-    double variance =
-        marketAveragePrice == 0 ? 0 : ((prediction - marketAveragePrice) / marketAveragePrice) * 100;
+    double variance = marketAveragePrice == 0 ? 0 : ((prediction - marketAveragePrice) / marketAveragePrice) * 100;
     return new WhatIfResponse(prediction, variance);
   }
 
@@ -115,7 +119,7 @@ public class MarketAnalysisService {
         return records;
       }
 
-      try (BufferedReader bufferedReader = Files.newBufferedReader(datasetPath);
+      try (BufferedReader bufferedReader = openDatasetReader();
           CSVReader csvReader = new CSVReader(bufferedReader)) {
         List<PropertyRecord> loaded = new ArrayList<>();
         String[] row;
@@ -139,9 +143,21 @@ public class MarketAnalysisService {
         records = List.copyOf(loaded);
         return records;
       } catch (IOException | CsvValidationException e) {
-        throw new IllegalStateException("Failed to read dataset from " + datasetPath, e);
+        throw new IllegalStateException("Failed to read dataset from " + datasetLocation, e);
       }
     }
+  }
+
+  private BufferedReader openDatasetReader() throws IOException {
+    String resolvedLocation = datasetLocation.contains(":")
+        ? datasetLocation
+        : "file:" + datasetLocation;
+    Resource resource = resourceLoader.getResource(resolvedLocation);
+    if (!resource.exists()) {
+      throw new IOException("Dataset not found at: " + datasetLocation);
+    }
+    return new BufferedReader(
+        new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8));
   }
 
   private boolean isHeaderRow(String[] row) {
