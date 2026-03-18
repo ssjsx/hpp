@@ -12,6 +12,18 @@ interface Props {
   initialHistory: EstimateResult[];
 }
 
+function createEntryId(): string {
+  if (
+    typeof globalThis !== "undefined" &&
+    globalThis.crypto &&
+    typeof globalThis.crypto.randomUUID === "function"
+  ) {
+    return globalThis.crypto.randomUUID();
+  }
+
+  return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
 export function App1Client({ initialHistory }: Props) {
   const [result, setResult] = useState<EstimateResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -25,7 +37,7 @@ export function App1Client({ initialHistory }: Props) {
     try {
       const prediction = await estimatePropertyValue(features);
       const entry: EstimateResult = {
-        id: crypto.randomUUID(),
+        id: createEntryId(),
         timestamp: Date.now(),
         inputs: features,
         prediction,
