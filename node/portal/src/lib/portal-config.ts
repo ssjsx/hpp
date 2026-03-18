@@ -32,7 +32,6 @@ async function probeApp(app: PortalAppDefinition): Promise<PortalAppStatus> {
     const res = await fetch(app.baseUrl, {
       method: "GET",
       cache: "no-store",
-      signal: AbortSignal.timeout(3000),
     });
 
     return {

@@ -12,10 +12,10 @@
     "start": "npm run start:all",
     "stop": "npm run stop:all",
     "lint": "npm run lint:all",
-    "dev:all": "(cd app1 && npm run dev) & (cd app2 && npm run dev) & (cd portal && npm run dev) & wait",
-    "build:all": "(cd app1 && npm run build) & (cd app2 && npm run build) & (cd portal && npm run build) & wait",
-    "start:all": "(cd app1 && npm run start) & (cd app2 && npm run start) & (cd portal && npm run start) & wait",
+    "dev:all": "npm --prefix app1 run dev & npm --prefix app2 run dev & npm --prefix portal run dev & wait",
+    "build:all": "npm --prefix app1 run build & npm --prefix app2 run build & npm --prefix portal run build & wait",
+    "start:all": "npm --prefix app1 run start & npm --prefix app2 run start & npm --prefix portal run start & wait",
     "stop:all": "for p in 3000 3002 3010; do pid=$(lsof -tiTCP:$p -sTCP:LISTEN); if [ -n \"$pid\" ]; then kill $pid; fi; done",
-    "lint:all": "cd app1 && npm run lint && cd ../app2 && npm run lint && cd ../portal && npm run lint"
+    "lint:all": "npm --prefix app1 run lint && npm --prefix app2 run lint && npm --prefix portal run lint"
   }
 }

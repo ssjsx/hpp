@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: "Compare Properties",
 };
 
-export default async function ComparisonRoutePage() {
+export default async function App1ComparisonPage() {
   const initialHistory = await getInitialEstimateHistory();
   return <ComparisonPage initialHistory={initialHistory} />;
 }

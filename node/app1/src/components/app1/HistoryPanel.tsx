@@ -53,7 +53,7 @@ export function HistoryPanel({ history, onRemove, onClear }: Props) {
           )}
           {history.length >= 2 && (
             <Link
-              href="/comparison"
+              href="/app1/comparison"
               className="text-xs font-medium text-blue-600 hover:text-blue-700 transition-colors"
             >
               Compare
