@@ -6,6 +6,14 @@ const nextConfig = {
   async rewrites() {
     return [
       {
+        source: "/api/app1/:path*",
+        destination: `${app1Base}/api/app1/:path*`,
+      },
+      {
+        source: "/api/app2/:path*",
+        destination: `${app2Base}/api/app2/:path*`,
+      },
+      {
         source: "/app1/_next/:path*",
         destination: `${app1Base}/_next/:path*`,
       },
