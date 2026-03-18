@@ -7,7 +7,7 @@ import clsx from "clsx";
 const NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/app1", label: "Property Estimator" },
-  { href: "/app1/comparison", label: "Compare" },
+  { href: "/comparison", label: "Compare" },
 ];
 
 export function Navbar() {

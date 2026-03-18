@@ -14,6 +14,10 @@ const nextConfig = {
         destination: `${app1Base}/app1`,
       },
       {
+        source: "/app1/comparison",
+        destination: `${app1Base}/comparison`,
+      },
+      {
         source: "/app1/:path*",
         destination: `${app1Base}/app1/:path*`,
       },

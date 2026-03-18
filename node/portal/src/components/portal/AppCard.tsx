@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { PortalAppDefinition, PortalAppStatus } from "@/lib/portal-types";
 
 interface Props {
@@ -10,7 +9,7 @@ export function AppCard({ app, status }: Props) {
   const reachable = status?.reachable ?? false;
 
   return (
-    <Link
+    <a
       href={app.path}
       className="block rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-md"
     >
@@ -33,6 +32,6 @@ export function AppCard({ app, status }: Props) {
       <p className="mt-2 text-sm leading-relaxed text-slate-500">
         {app.description}
       </p>
-    </Link>
+    </a>
   );
 }
