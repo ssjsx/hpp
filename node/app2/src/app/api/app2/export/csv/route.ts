@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import type { MarketFilters } from "@/lib/types";
 import { buildFallbackCsv } from "@/lib/marketAnalysisFallback";
 
-const JAVA_API_URL = process.env.JAVA_API_URL ?? "http://127.0.0.1:8080";
+const JAVA_API_URL = process.env.JAVA_API_URL;
 
 function getFilters(searchParams: URLSearchParams): MarketFilters {
   return {
@@ -34,6 +34,10 @@ export async function GET(req: NextRequest) {
   const qs = req.nextUrl.searchParams.toString();
 
   try {
+    if (!JAVA_API_URL) {
+      throw new Error("JAVA_API_URL is not configured");
+    }
+
     const upstream = await fetch(
       `${JAVA_API_URL}/api/v1/market/export/csv?${qs}`,
     );

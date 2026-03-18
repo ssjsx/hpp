@@ -1,8 +1,12 @@
 import type { MarketOverviewResponse } from "@/lib/types";
 
-const JAVA_API_URL = process.env.JAVA_API_URL ?? "http://127.0.0.1:8080";
+const JAVA_API_URL = process.env.JAVA_API_URL;
 
 export async function getInitialMarketOverview(): Promise<MarketOverviewResponse | null> {
+  if (!JAVA_API_URL) {
+    return null;
+  }
+
   try {
     const res = await fetch(`${JAVA_API_URL}/api/v1/market/overview`, {
       headers: { "Content-Type": "application/json" },

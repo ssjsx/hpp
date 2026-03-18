@@ -1,8 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const PYTHON_API_URL = process.env.PYTHON_API_URL ?? "http://127.0.0.1:8001";
+const PYTHON_API_URL = process.env.PYTHON_API_URL;
 
 export async function POST(req: NextRequest) {
+  if (!PYTHON_API_URL) {
+    return NextResponse.json(
+      {
+        success: 1,
+        error: {
+          code: "CONFIG_ERROR",
+          message: "PYTHON_API_URL is not configured in .env.",
+          path: "/api/app1/estimate",
+        },
+      },
+      { status: 500 },
+    );
+  }
+
   let body: Record<string, unknown>;
   try {
     body = await req.json();

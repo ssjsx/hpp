@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import type { MarketFilters } from "@/lib/types";
 import { buildFallbackOverview } from "@/lib/marketAnalysisFallback";
 
-const JAVA_API_URL = process.env.JAVA_API_URL ?? "http://127.0.0.1:8080";
+const JAVA_API_URL = process.env.JAVA_API_URL;
 
 function getFilters(searchParams: URLSearchParams): MarketFilters {
   return {
@@ -70,6 +70,10 @@ function normalizeOverviewPayload(payload: unknown) {
 
 export async function GET(req: NextRequest) {
   const filters = getFilters(req.nextUrl.searchParams);
+
+  if (!JAVA_API_URL) {
+    return NextResponse.json(buildFallbackOverview(filters));
+  }
 
   try {
     const upstream = await fetch(

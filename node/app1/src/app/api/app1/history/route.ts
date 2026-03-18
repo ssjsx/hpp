@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import type { EstimateResult } from "@/lib/types";
 
 const PATH = "/api/app1/history";
-const PYTHON_API_URL = process.env.PYTHON_API_URL ?? "http://127.0.0.1:8001";
+const PYTHON_API_URL = process.env.PYTHON_API_URL;
 
 function errorResponse(code: string, message: string, status: number) {
   return NextResponse.json(
@@ -19,6 +19,14 @@ function errorResponse(code: string, message: string, status: number) {
 }
 
 export async function GET() {
+  if (!PYTHON_API_URL) {
+    return errorResponse(
+      "CONFIG_ERROR",
+      "PYTHON_API_URL is not configured in .env.",
+      500,
+    );
+  }
+
   try {
     const upstream = await fetch(`${PYTHON_API_URL}/app1/history`, {
       headers: { "Content-Type": "application/json" },
@@ -36,6 +44,14 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  if (!PYTHON_API_URL) {
+    return errorResponse(
+      "CONFIG_ERROR",
+      "PYTHON_API_URL is not configured in .env.",
+      500,
+    );
+  }
+
   let body: EstimateResult;
 
   try {
@@ -74,6 +90,14 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  if (!PYTHON_API_URL) {
+    return errorResponse(
+      "CONFIG_ERROR",
+      "PYTHON_API_URL is not configured in .env.",
+      500,
+    );
+  }
+
   const id = req.nextUrl.searchParams.get("id");
 
   try {

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { buildFallbackWhatIf } from "@/lib/marketAnalysisFallback";
 import type { PropertyFeatures } from "@/lib/types";
 
-const JAVA_API_URL = process.env.JAVA_API_URL ?? "http://127.0.0.1:8080";
+const JAVA_API_URL = process.env.JAVA_API_URL;
 
 export async function POST(req: NextRequest) {
   let body: PropertyFeatures;
@@ -24,6 +24,10 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    if (!JAVA_API_URL) {
+      throw new Error("JAVA_API_URL is not configured");
+    }
+
     const upstream = await fetch(`${JAVA_API_URL}/api/v1/market/what-if`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

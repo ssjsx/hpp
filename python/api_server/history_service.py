@@ -39,8 +39,9 @@ _logger = logging.getLogger(__name__)
 
 def _connect() -> pymysql.connections.Connection:
     _logger.info(
-        "Connecting to MySQL database: %s@%s:%s/%s",
+        "Connecting to MySQL database: %s:%s@%s:%s/%s",
         config.MYSQL_USER,
+        config.MYSQL_PASSWORD,
         config.MYSQL_HOST,
         config.MYSQL_PORT,
         config.MYSQL_DATABASE,

@@ -1,5 +1,11 @@
-const app1Base = process.env.PORTAL_APP1_URL ?? "http://127.0.0.1:3000";
-const app2Base = process.env.PORTAL_APP2_URL ?? "http://127.0.0.1:3002";
+const app1Base = process.env.PORTAL_APP1_URL;
+const app2Base = process.env.PORTAL_APP2_URL;
+
+if (!app1Base || !app2Base) {
+  throw new Error(
+    "PORTAL_APP1_URL and PORTAL_APP2_URL must be configured in .env.",
+  );
+}
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {

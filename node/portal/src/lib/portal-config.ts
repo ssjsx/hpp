@@ -5,8 +5,8 @@ import type {
   PortalBootstrapData,
 } from "@/lib/portal-types";
 
-const app1Base = process.env.PORTAL_APP1_URL ?? "http://127.0.0.1:3000";
-const app2Base = process.env.PORTAL_APP2_URL ?? "http://127.0.0.1:3002";
+const app1Base = process.env.PORTAL_APP1_URL ?? "";
+const app2Base = process.env.PORTAL_APP2_URL ?? "";
 
 export const PORTAL_APPS: PortalAppDefinition[] = [
   {

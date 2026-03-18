@@ -212,24 +212,26 @@ export function buildFallbackOverview(
 export async function buildFallbackWhatIf(
   features: PropertyFeatures,
 ): Promise<WhatIfResult> {
-  const mlUrl = process.env.PREDICT_API_URL ?? "http://127.0.0.1:8000";
+  const mlUrl = process.env.PREDICT_API_URL;
   let prediction = 0;
 
-  try {
-    const response = await fetch(`${mlUrl}/predict`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(features),
-    });
+  if (mlUrl) {
+    try {
+      const response = await fetch(`${mlUrl}/predict`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(features),
+      });
 
-    if (response.ok) {
-      const data = (await response.json()) as { prediction?: number };
-      if (typeof data.prediction === "number") {
-        prediction = data.prediction;
+      if (response.ok) {
+        const data = (await response.json()) as { prediction?: number };
+        if (typeof data.prediction === "number") {
+          prediction = data.prediction;
+        }
       }
+    } catch {
+      prediction = 0;
     }
-  } catch {
-    prediction = 0;
   }
 
   // If predict server is not reachable, return a deterministic estimate from the local dataset baseline.
