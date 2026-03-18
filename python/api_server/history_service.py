@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from typing import Any
 
 import pymysql
@@ -13,19 +14,37 @@ CREATE TABLE IF NOT EXISTS app1_estimate_history (
     id VARCHAR(64) PRIMARY KEY,
     created_at BIGINT NOT NULL,
     prediction DOUBLE NOT NULL,
-    inputs JSON NOT NULL
+    inputs JSON NOT NULL,
+    INDEX idx_app1_history_created_at (created_at)
 )
 """
 
-_INDEX_SQL = """
-CREATE INDEX IF NOT EXISTS idx_app1_history_created_at
-ON app1_estimate_history (created_at DESC)
+_CHECK_INDEX_SQL = """
+    SELECT 1
+    FROM information_schema.statistics
+    WHERE table_schema = DATABASE()
+    AND table_name = 'app1_estimate_history'
+    AND index_name = 'idx_app1_history_created_at'
+    LIMIT 1
+"""
+
+_ADD_INDEX_SQL = """
+    ALTER TABLE app1_estimate_history
+    ADD INDEX idx_app1_history_created_at (created_at)
 """
 
 _initialized = False
+_logger = logging.getLogger(__name__)
 
 
 def _connect() -> pymysql.connections.Connection:
+    _logger.info(
+        "Connecting to MySQL database: %s@%s:%s/%s",
+        config.MYSQL_USER,
+        config.MYSQL_HOST,
+        config.MYSQL_PORT,
+        config.MYSQL_DATABASE,
+    )
     return pymysql.connect(
         host=config.MYSQL_HOST,
         port=config.MYSQL_PORT,
@@ -47,7 +66,9 @@ def _ensure_initialized() -> None:
         with _connect() as conn:
             with conn.cursor() as cursor:
                 cursor.execute(_TABLE_SQL)
-                cursor.execute(_INDEX_SQL)
+                cursor.execute(_CHECK_INDEX_SQL)
+                if cursor.fetchone() is None:
+                    cursor.execute(_ADD_INDEX_SQL)
         _initialized = True
     except Exception as exc:  # pragma: no cover - defensive DB guard
         raise ApiError(
