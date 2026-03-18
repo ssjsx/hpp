@@ -30,7 +30,13 @@ _mysql = _raw.get("mysql", {})
 
 # --- predict_server integration ---
 # Environment variables override values from config.yaml.
-PREDICT_SERVER_URL: str = os.getenv("PREDICT_SERVER_URL", _predict.get("url", "")).rstrip("/")
+# Accept both PREDICT_SERVER_URL and PREDICT_BASE_URL for compatibility.
+_predict_url = (
+    os.getenv("PREDICT_SERVER_URL")
+    or os.getenv("PREDICT_BASE_URL")
+    or _predict.get("url", "")
+)
+PREDICT_SERVER_URL: str = _predict_url.rstrip("/")
 PREDICT_SERVER_TIMEOUT_SECONDS: float = float(
     os.getenv("PREDICT_SERVER_TIMEOUT_SECONDS", _predict["timeout_seconds"])
 )

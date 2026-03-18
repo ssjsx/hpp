@@ -8,6 +8,13 @@ from schemas import PredictServerSingleResponse, PropertyFeatures
 
 
 async def estimate_property_value(payload: PropertyFeatures) -> float:
+    if not config.PREDICT_SERVER_URL:
+        raise ApiError(
+            status_code=500,
+            code="CONFIG_ERROR",
+            message="Predict server URL is not configured (set PREDICT_SERVER_URL or PREDICT_BASE_URL)",
+        )
+
     url = f"{config.PREDICT_SERVER_URL}/predict"
     timeout = config.PREDICT_SERVER_TIMEOUT_SECONDS
 
