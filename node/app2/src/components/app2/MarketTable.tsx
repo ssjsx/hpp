@@ -10,6 +10,13 @@ function formatCurrency(value: number) {
   }).format(value);
 }
 
+function formatNumber(value: number | null | undefined): string {
+  if (typeof value !== "number" || Number.isNaN(value)) {
+    return "-";
+  }
+  return value.toLocaleString();
+}
+
 type SortableColumn =
   | "price"
   | "square_footage"
@@ -95,7 +102,7 @@ export function MarketTable({ rows, totalRows, filters, onSortChange }: Props) {
                 {formatCurrency(row.price)}
               </td>
               <td className="px-3 py-2 text-slate-700">
-                {row.square_footage.toLocaleString()}
+                {formatNumber(row.square_footage)}
               </td>
               <td className="px-3 py-2 text-slate-700">{row.bedrooms}</td>
               <td className="px-3 py-2 text-slate-700">{row.bathrooms}</td>

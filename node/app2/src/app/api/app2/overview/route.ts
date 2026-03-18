@@ -36,6 +36,38 @@ function getFilters(searchParams: URLSearchParams): MarketFilters {
   };
 }
 
+function toNumber(value: unknown): number {
+  if (typeof value === "number") return value;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function normalizeOverviewPayload(payload: unknown) {
+  const data = (payload ?? {}) as {
+    rows?: Array<Record<string, unknown>>;
+    [key: string]: unknown;
+  };
+
+  const normalizedRows = (data.rows ?? []).map((row) => ({
+    id: toNumber(row.id),
+    price: toNumber(row.price),
+    square_footage: toNumber(row.square_footage ?? row.squareFootage),
+    bedrooms: toNumber(row.bedrooms),
+    bathrooms: toNumber(row.bathrooms),
+    year_built: toNumber(row.year_built ?? row.yearBuilt),
+    lot_size: toNumber(row.lot_size ?? row.lotSize),
+    distance_to_city_center: toNumber(
+      row.distance_to_city_center ?? row.distanceToCityCenter,
+    ),
+    school_rating: toNumber(row.school_rating ?? row.schoolRating),
+  }));
+
+  return {
+    ...data,
+    rows: normalizedRows,
+  };
+}
+
 export async function GET(req: NextRequest) {
   const filters = getFilters(req.nextUrl.searchParams);
 
@@ -49,7 +81,8 @@ export async function GET(req: NextRequest) {
     );
 
     if (upstream.ok) {
-      return NextResponse.json(await upstream.json(), {
+      const payload = await upstream.json();
+      return NextResponse.json(normalizeOverviewPayload(payload), {
         status: upstream.status,
       });
     }
