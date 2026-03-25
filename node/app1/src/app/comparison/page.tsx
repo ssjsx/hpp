@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ComparisonPage } from "@/components/app1/ComparisonPage";
-import { getInitialEstimateHistory } from "@/lib/serverHistory";
+import { getInitialEstimateHistory } from "@/lib/server";
 
 export const metadata: Metadata = {
   title: "Compare Properties",

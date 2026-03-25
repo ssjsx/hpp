@@ -80,10 +80,10 @@ export async function GET(req: NextRequest) {
       `${JAVA_API_URL}/api/v1/market/overview?${req.nextUrl.searchParams.toString()}`,
       {
         headers: { "Content-Type": "application/json" },
-        cache: "no-store",
+        next: { revalidate: 120 },
       },
     );
-    console.log(upstream.ok);
+    console.log(JAVA_API_URL, upstream.ok);
     if (upstream.ok) {
       const payload = await upstream.json();
       return NextResponse.json(normalizeOverviewPayload(payload), {

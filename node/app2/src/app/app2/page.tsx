@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { App2Client } from "@/components/app2/App2Client";
-import { getInitialMarketOverview } from "@/lib/serverApp2";
+import { getInitialMarketOverview } from "@/lib/server";
 
 export const metadata: Metadata = {
   title: "Property Market Analysis",

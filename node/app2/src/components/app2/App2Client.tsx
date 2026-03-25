@@ -18,7 +18,7 @@ import {
   downloadMarketExport,
   fetchMarketOverview,
   runWhatIfAnalysis,
-} from "@/lib/api";
+} from "@/lib/client";
 import type {
   MarketFilters,
   MarketOverviewResponse,
