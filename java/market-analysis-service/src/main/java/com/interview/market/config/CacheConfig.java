@@ -18,9 +18,9 @@ public class CacheConfig {
   @Bean
   public CacheManager cacheManager(
       @Value("${market.cache.overviewTtl:PT5M}") Duration overviewTtl,
-      @Value("${market.cache.csvTtl:PT10M}") Duration csvTtl,
+      @Value("${market.cache.csvTtl:PT2M}") Duration csvTtl,
       @Value("${market.cache.overviewMaxSize:200}") long overviewMaxSize,
-      @Value("${market.cache.csvMaxSize:100}") long csvMaxSize) {
+      @Value("${market.cache.csvMaxSize:20}") long csvMaxSize) {
     SimpleCacheManager manager = new SimpleCacheManager();
     manager.setCaches(
         List.of(

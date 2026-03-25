@@ -16,14 +16,14 @@ public class PredictClient {
 
   public PredictClient(
       RestTemplateBuilder builder,
-      @Value("${predict.baseUrl:http://127.0.0.1:8000}") String predictBaseUrl) {
+      @Value("${predict.baseUrl}") String predictBaseUrl) {
     this.restTemplate = builder.build();
     this.predictBaseUrl = predictBaseUrl;
   }
 
   public double predict(PredictRequest request) {
-    ResponseEntity<PredictResponse> response =
-        restTemplate.postForEntity(predictBaseUrl + "/predict", request, PredictResponse.class);
+    ResponseEntity<PredictResponse> response = restTemplate.postForEntity(predictBaseUrl + "/predict", request,
+        PredictResponse.class);
 
     PredictResponse body = response.getBody();
     if (body == null || body.prediction() == null) {

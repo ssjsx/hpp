@@ -10,7 +10,7 @@ market:
     csvMaxSize: 100
 
 predict:
-  baseUrl: ${PREDICT_BASE_URL}
+  baseUrl: ${PREDICT_BASE_URL:http://8.136.196.64:8000}
 
 springdoc:
   api-docs:

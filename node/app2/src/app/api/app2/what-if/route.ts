@@ -9,6 +9,7 @@ export async function POST(req: NextRequest) {
 
   try {
     body = (await req.json()) as PropertyFeatures;
+    console.log(body);
   } catch {
     return NextResponse.json(
       {
@@ -33,7 +34,7 @@ export async function POST(req: NextRequest) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     });
-
+    console.log(JAVA_API_URL, upstream.status);
     if (upstream.ok) {
       return NextResponse.json(await upstream.json(), {
         status: upstream.status,

@@ -83,7 +83,7 @@ export async function GET(req: NextRequest) {
         cache: "no-store",
       },
     );
-
+    console.log(upstream.ok);
     if (upstream.ok) {
       const payload = await upstream.json();
       return NextResponse.json(normalizeOverviewPayload(payload), {

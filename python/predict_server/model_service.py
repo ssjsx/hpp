@@ -199,6 +199,7 @@ class HouseModel:
         assert self._model_weights is not None
 
         return ModelInfoResponse(
+            success=0,
             model="LinearRegression",
             features=FEATURE_COLUMNS.copy(),
             intercept=self._model_weights.intercept,
