@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 from functools import lru_cache
+import logging
 import pickle
 from pathlib import Path
+from threading import Lock
+import time
 from typing import cast
 
 import numpy as np
@@ -20,6 +23,8 @@ from schemas import (
     TrainingRow,
 )
 
+logging.getLogger(__name__)
+
 FEATURE_COLUMNS = [
     "square_footage",
     "bedrooms",
@@ -34,10 +39,6 @@ BASE_DIR = Path(__file__).resolve().parent
 DATASET_PATH = BASE_DIR / "dataset" / "House Price Dataset.csv"
 MODEL_WEIGHTS_DIR = BASE_DIR / "model_weights"
 MODEL_WEIGHTS_PATH = MODEL_WEIGHTS_DIR / "house_model_weights.pkl"
-MODEL_DIR = MODEL_WEIGHTS_DIR
-MODEL_PATH = MODEL_WEIGHTS_PATH
-LEGACY_MODEL_WEIGHTS_DIR = BASE_DIR / "artifacts"
-LEGACY_MODEL_PATH = LEGACY_MODEL_WEIGHTS_DIR / "house_model.pkl"
 
 
 @lru_cache(maxsize=4)
@@ -89,7 +90,7 @@ def _load_model_weights_cached(
     model_weights_path = Path(model_weights_path_str)
     with model_weights_path.open("rb") as file:
         loaded = pickle.load(file)
-
+    logging.info("Last modified time of loaded model weights file: %s", time.ctime(model_weights_mtime_ns / 1e9))
     if not isinstance(loaded, ModelWeights):
         raise ValueError("Persisted model weights file has invalid format")
 
@@ -114,18 +115,22 @@ class HouseModel:
         self.dataset_path = dataset_path
         self.model_weights_path = model_weights_path
         self._model_weights: ModelWeights | None = None
+        self._load_lock = Lock()
 
     def ensure_loaded(self) -> None:
         if self._model_weights is not None:
             return
 
-        self._migrate_legacy_model_weights()
+        # Double-checked locking avoids duplicate model initialization under concurrent requests.
+        with self._load_lock:
+            if self._model_weights is not None:
+                return
 
-        if self.model_weights_path.exists():
-            self._load_from_disk()
-            return
+            if self.model_weights_path.exists():
+                self._load_from_disk()
+                return
 
-        self.train_and_save()
+            self.train_and_save()
 
     def train_and_save(self) -> None:
         rows = self._load_training_rows()
@@ -218,20 +223,6 @@ class HouseModel:
                 self.dataset_path.stat().st_mtime_ns,
             )
         )
-
-    def _migrate_legacy_model_weights(self) -> None:
-        if self.model_weights_path.exists() or not LEGACY_MODEL_WEIGHTS_DIR.exists():
-            return
-
-        legacy_weights_path = LEGACY_MODEL_WEIGHTS_DIR / self.model_weights_path.name
-        legacy_pickle_path = LEGACY_MODEL_PATH
-        source_path = legacy_weights_path if legacy_weights_path.exists() else legacy_pickle_path
-
-        if not source_path.exists():
-            return
-
-        self.model_weights_path.parent.mkdir(parents=True, exist_ok=True)
-        source_path.replace(self.model_weights_path)
 
     @staticmethod
     def _tuple_to_training_row(row: tuple[object, ...]) -> TrainingRow:

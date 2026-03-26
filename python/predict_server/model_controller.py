@@ -37,10 +37,10 @@ async def predict(payload: HouseFeatures | list[HouseFeatures]) -> PredictRespon
             )
 
         predictions = await run_in_threadpool(model_service.predict_batch, payload)
-        return PredictBatchResponse(predictions=predictions, count=len(payload))
+        return PredictBatchResponse(success=0,predictions=predictions, count=len(payload))
 
     prediction = await run_in_threadpool(model_service.predict_one, payload)
-    return PredictSingleResponse(prediction=prediction)
+    return PredictSingleResponse(success=0,prediction=prediction)
 
 
 @router.get("/model-info", response_model=ModelInfoResponse)

@@ -24,6 +24,7 @@ def error_response(
     details: list[ValidationErrorDetail] | None = None,
 ) -> JSONResponse:
     payload = ErrorResponse(
+        success=1,
         error=ErrorPayload(code=code, message=message, path=path, details=details)
     )
     return JSONResponse(status_code=status_code, content=payload.model_dump(exclude_none=True))
